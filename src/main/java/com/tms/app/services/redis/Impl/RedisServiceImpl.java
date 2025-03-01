@@ -19,18 +19,23 @@ public class RedisServiceImpl implements RedisService {
 
     @Override
     public void saveData(String key, String value, int expiryInSeconds) {
+        log.info("saving in cache");
         this.redisTemplate.opsForValue().set(key, value, expiryInSeconds, TimeUnit.SECONDS);
     }
 
     @Override
     public String getData(String key) {
+        log.info("retrieving from cache");
         return this.redisTemplate.opsForValue().get(key);
     }
 
     @Override
     public <T> T getCachedData(String prefix, String value, String logMessage, Class<T> clazz) {
         String cacheKey = prefix + value;
+        log.info("checking cache for {}", cacheKey);
+
         String cachedResponse = this.getData(cacheKey);
+        log.info("cache response {}", cachedResponse);
 
         if (cachedResponse != null) {
             log.info("{}: {}", logMessage, value);

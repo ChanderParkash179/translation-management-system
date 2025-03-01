@@ -12,7 +12,7 @@ public class CustomUtils {
         return fullName.concat(UUID.randomUUID().toString().substring(0, 8));
     }
 
-    public static <T> String writeAsJSON(Class<T> t) throws JsonProcessingException {
-        return new ObjectMapper().writeValueAsString(t);
+    public static <T> String writeAsJSON(T object) throws JsonProcessingException {
+        return new ObjectMapper().writeValueAsString(object);
     }
 }

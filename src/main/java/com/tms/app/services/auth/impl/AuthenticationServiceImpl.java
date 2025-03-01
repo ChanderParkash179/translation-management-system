@@ -8,11 +8,11 @@ import com.tms.app.entities.user.User;
 import com.tms.app.enums.Message;
 import com.tms.app.enums.RoleType;
 import com.tms.app.exceptions.AlreadyExistsException;
+import com.tms.app.repositories.role.RoleRepository;
 import com.tms.app.repositories.user.UserRepository;
 import com.tms.app.security.JWTService;
 import com.tms.app.services.auth.AuthenticationService;
 import com.tms.app.services.redis.RedisService;
-import com.tms.app.services.role.RoleService;
 import com.tms.app.services.token.UserSessionService;
 import com.tms.app.utils.AppConstants;
 import com.tms.app.utils.AppLogger;
@@ -35,12 +35,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final AppLogger log = new AppLogger(AuthenticationServiceImpl.class);
 
     private final JWTService jwtService;
-    private final RoleService roleService;
     private final RedisService redisService;
     private final PasswordEncoder passwordEncoder;
     private final UserSessionService userSessionService;
     private final AuthenticationManager authenticationManager;
 
+    private final RoleRepository roleRepository;
     private final UserRepository userRepository;
 
     @Override
@@ -67,7 +67,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .role(user.getRole().getRoleName())
                 .build();
 
-        this.redisService.saveData(AppConstants.LOGIN_CACHE_PREFIX + authenticationRequest.getUsername(), CustomUtils.writeAsJSON(AuthenticationResponse.class), 6000);
+        this.redisService.saveData(AppConstants.LOGIN_CACHE_PREFIX + authenticationRequest.getUsername(), CustomUtils.writeAsJSON(authenticationResponse), 6000);
         log.info("User Authenticated Successfully");
 
         return authenticationResponse;
@@ -91,7 +91,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setIsActive(Boolean.TRUE);
         user.setCreatedAt(LocalDateTime.now());
 
-        user.setRole(this.roleService.getRoleByName(RoleType.USER.getRoleType()));
+        user.setRole(this.roleRepository.findRoleByName(RoleType.USER.getRoleType()).orElse(null));
 
         this.userRepository.save(user);
 
@@ -105,7 +105,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .role(user.getRole().getRoleName())
                 .build();
 
-        this.redisService.saveData(AppConstants.SIGNUP_CACHE_PREFIX + signupRequest.getEmail(), CustomUtils.writeAsJSON(AuthenticationResponse.class), 6);
+        this.redisService.saveData(AppConstants.SIGNUP_CACHE_PREFIX + signupRequest.getEmail(), CustomUtils.writeAsJSON(authenticationResponse), 30);
         log.info("User Registered Successfully");
 
         return authenticationResponse;

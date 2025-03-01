@@ -1,4 +1,4 @@
-package com.tms.app.loaders.role;
+package com.tms.app.loaders;
 
 import com.tms.app.entities.role.Role;
 import com.tms.app.repositories.role.RoleRepository;

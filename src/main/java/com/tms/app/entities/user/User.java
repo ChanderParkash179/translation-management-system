@@ -20,6 +20,7 @@ import java.util.stream.Stream;
 
 @Setter
 @Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity

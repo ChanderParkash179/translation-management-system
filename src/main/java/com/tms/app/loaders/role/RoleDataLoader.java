@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 
 import java.util.*;
 
@@ -19,6 +20,7 @@ public class RoleDataLoader {
     private final RoleRepository roleRepository;
 
     @Bean
+    @Order(1)
     public CommandLineRunner insertRoles() {
         return args -> {
             List<Role> roles = List.of(

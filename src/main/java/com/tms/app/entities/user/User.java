@@ -51,15 +51,7 @@ public class User implements UserDetails {
     private Role role;
 
     @Column(name = "is_active")
-    private Boolean isActive = true;
-
-    @Column(name = "created_by", updatable = false)
-    @JdbcTypeCode(Types.VARCHAR)
-    private UUID createdBy;
-
-    @Column(name = "modified_by", insertable = false)
-    @JdbcTypeCode(Types.VARCHAR)
-    private UUID modifiedBy;
+    private Boolean isActive;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

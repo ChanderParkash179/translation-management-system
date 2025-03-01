@@ -1,12 +1,14 @@
 package com.tms.app.entities.role;
 
-import com.tms.app.entities.audit.AuditEntity;
-import jakarta.persistence.*;
 import lombok.*;
+import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Types;
 import java.util.UUID;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -15,7 +17,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "role")
-public class Role extends AuditEntity {
+public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -24,4 +26,15 @@ public class Role extends AuditEntity {
 
     @Column(name = "role_name")
     private String roleName;
+
+    @Column(name = "is_active")
+    private Boolean isActive;
+
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "modified_at", insertable = false)
+    private LocalDateTime modifiedAt;
 }

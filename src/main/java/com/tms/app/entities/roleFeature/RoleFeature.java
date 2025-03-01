@@ -1,13 +1,15 @@
 package com.tms.app.entities.roleFeature;
 
-import com.tms.app.entities.audit.AuditEntity;
 import com.tms.app.entities.feature.Feature;
 import com.tms.app.entities.role.Role;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Types;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -17,7 +19,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "role_feature")
-public class RoleFeature extends AuditEntity {
+public class RoleFeature {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -33,4 +35,15 @@ public class RoleFeature extends AuditEntity {
     @JoinColumn(name = "role_id")
     @JdbcTypeCode(Types.VARCHAR)
     private Role role;
+
+    @Column(name = "is_active")
+    private Boolean isActive;
+
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "modified_at", insertable = false)
+    private LocalDateTime modifiedAt;
 }

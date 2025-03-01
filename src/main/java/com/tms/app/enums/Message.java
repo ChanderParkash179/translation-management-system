@@ -20,25 +20,9 @@ public enum Message {
     ACCESS_DENIED("Access Denied"),
     LINK_EXPIRED("Link has been Expired"),
     INTERNAL_SERVER_ERROR("Unexpected Error. Please try again"),
-    DUPLICATE_USERNAME_EMAIL("Username OR Email Already Exists"),
-    DUPLICATE_PROGRAM_ENROLLMENT("You're Already Enrolled in Program: "),
-    DUPLICATE_COURSE_ENROLLMENT("You're Already Enrolled in Course: "),
+    LOGIN_SUCCESS("User Logged In Successfully"),
     UNPROCESSABLE_ENTITY("The provided password is compromised and cannot be used"),
-    DUPLICATE_PROFESSION("Profession Already Exists"),
-    DUPLICATE_SUBJECT("Subject Already Exists"),
-    QUIZ_NOT_FOUND("Quiz not found with id: "),
-    QUESTION_NOT_FOUND("Question not found with id: "),
-    QUESTION_OPTION_NOT_FOUND("Question option not found with id: "),
-    COURSE_NOT_FOUND("Course not found with id: "),
-    REMINDER_NOT_FOUND("Reminder not found with id: "),
-    CONTENT_NOT_FOUND("Content not found with id: "),
-    DOCUMENT_NOT_FOUND("Document not found with id: "),
-    COMMENT_NOT_FOUND("Comment not found with id: "),
-    RUBRIC_NOT_FOUND("Rubric not found with id: "),
-    SURVEY_NOT_FOUND("Survey not found with course id: "),
-    ARTICLE_NOT_FOUND("Article not found with id: "),
-    ARTICLE_CONTENT_NOT_FOUND("Article content not found with id: ");
-
+    SIGNUP_SUCCESS("User Registered Successfully");
     private final String message;
 
     Message(String message) {

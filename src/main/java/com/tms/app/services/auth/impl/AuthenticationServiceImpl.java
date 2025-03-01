@@ -50,7 +50,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (cached != null) return cached;
 
         log.info("Authenticating User");
-        User user = userRepository.findActiveUserByEmailOrUsername(authenticationRequest.getUsername())
+        User user = this.userRepository.findActiveUserByEmailOrUsername(authenticationRequest.getUsername())
                 .orElseThrow(() -> {
                     log.warn(Message.INVALID_CREDENTIALS.getMessage());
                     return new BadCredentialsException(Message.INVALID_CREDENTIALS.getMessage());

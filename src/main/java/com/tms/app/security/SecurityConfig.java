@@ -67,13 +67,11 @@ public class SecurityConfig {
                         .logoutSuccessHandler((req, res, auth) -> SecurityContextHolder.clearContext())
                 );
 
-
         return http.build();
     }
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
-
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(userDetailsService);
         authenticationProvider.setPasswordEncoder(passwordEncoder());
@@ -82,25 +80,21 @@ public class SecurityConfig {
 
     @Bean
     public CompromisedPasswordChecker compromisedPasswordChecker() {
-
         return new HaveIBeenPwnedRestApiPasswordChecker();
     }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration builder) throws Exception {
-
         return builder.getAuthenticationManager();
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-
         return new BCryptPasswordEncoder();
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 
         CorsConfiguration corsConfiguration = new CorsConfiguration();

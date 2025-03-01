@@ -1,44 +1,42 @@
 package com.tms.app.dtos.auth.request;
 
+import lombok.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
-import lombok.*;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Schema(description = "Request object for user signup")
 public class SignupRequest {
 
     @NotEmpty(message = "Full Name cannot be Empty")
+    @Schema(description = "Full name of the user", example = "John Doe")
     private String fullName;
 
     @NotEmpty(message = "Name cannot be Empty")
+    @Schema(description = "Username chosen by the user", example = "johndoe")
     private String username;
 
     @NotEmpty(message = "Email cannot be Empty")
     @Email(message = "Please provide a valid email address")
+    @Schema(description = "Email address of the user", example = "john.doe@example.com")
     private String email;
 
     @NotEmpty(message = "Password cannot be Empty")
+    @Schema(description = "Password for the user account", example = "password123@")
     private String password;
 
     @Override
     public String toString() {
-
         int emailLength = email.length();
         int usernameLength = username.length();
 
-        // Mask email middle characters with asterisks
         String maskedEmail = maskString(email, emailLength);
-
-        // Mask username middle characters with asterisks
         String maskedUsername = maskString(username, usernameLength);
-
-        // Get the length of the password
         int passwordLength = password.length();
-
-        // Mask password middle characters with asterisks
         String maskedPassword = maskString(password, passwordLength);
 
         return "SignupRequest{" +

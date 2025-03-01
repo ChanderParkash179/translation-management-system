@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ApiResponse<T> {
+public class APIResponse<T> {
 
     private Integer status;
     private Boolean success;
@@ -17,9 +17,9 @@ public class ApiResponse<T> {
     private LocalDateTime timestamp;
     private T data;
 
-    public static <T> ApiResponse<T> success(Integer status, String message) {
+    public static <T> APIResponse<T> success(Integer status, String message) {
 
-        return new ApiResponseBuilder<T>()
+        return new APIResponseBuilder<T>()
                 .success(true)
                 .status(status)
                 .message(message)
@@ -27,9 +27,9 @@ public class ApiResponse<T> {
                 .build();
     }
 
-    public static <T> ApiResponse<T> success(Integer status, String message, T data) {
+    public static <T> APIResponse<T> success(Integer status, String message, T data) {
 
-        return new ApiResponseBuilder<T>()
+        return new APIResponseBuilder<T>()
                 .success(true)
                 .status(status)
                 .message(message)

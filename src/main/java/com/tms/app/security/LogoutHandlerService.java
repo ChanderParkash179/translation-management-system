@@ -27,7 +27,6 @@ public class LogoutHandlerService implements LogoutHandler {
 
         String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         if(authHeader != null && !authHeader.isEmpty() && StringUtils.startsWith(authHeader, bearer)) {
-
             log.info("Extracting Token from Header");
             jwtToken = authHeader.substring(bearer.length());
             log.info("Deleting User Session");

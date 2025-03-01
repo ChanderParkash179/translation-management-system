@@ -24,7 +24,6 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import static com.tms.app.enums.Message.SESSION_EXPIRED;
 
-
 @Component
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
@@ -63,7 +62,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             }
 
             jwt = header.substring(7);
-            userEmail = jwtService.extractUsername(jwt);
+            userEmail = this.jwtService.extractUsername(jwt);
 
             if (!StringUtils.isEmpty(userEmail) && SecurityContextHolder.getContext().getAuthentication() == null) {
 

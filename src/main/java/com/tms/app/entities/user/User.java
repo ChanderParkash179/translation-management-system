@@ -18,8 +18,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-
 @Setter
 @Getter
 @Builder
@@ -32,26 +30,21 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @JdbcTypeCode(SqlTypes.BINARY)
-    @Schema(description = "User ID", example = "")
     private UUID id;
 
     @Column(name = "username", unique = true)
-    @Schema(description = "User name", example = "John123")
     private String username;
 
     @Column(name = "password")
     private String password;
 
     @Column(name = "email", unique = true)
-    @Schema(description = "User email", example = "john@example.com")
     private String email;
 
     @Column(name = "first_name")
-    @Schema(description = "User firstname", example = "John")
     private String firstName;
 
     @Column(name = "last_name")
-    @Schema(description = "User firstname", example = "Doe")
     private String lastName;
 
     @ManyToOne(cascade = CascadeType.ALL)

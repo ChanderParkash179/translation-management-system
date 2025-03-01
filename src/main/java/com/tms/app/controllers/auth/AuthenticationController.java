@@ -1,6 +1,5 @@
 package com.tms.app.controllers.auth;
 
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.tms.app.dtos.auth.request.AuthenticationRequest;
 import com.tms.app.dtos.auth.request.SignupRequest;
@@ -29,17 +28,10 @@ public class AuthenticationController {
                 ApiResponse.success(HttpStatus.OK.value(), Message.LOGIN_SUCCESS.getMessage(), authenticationResponse));
     }
 
-    @PostMapping("/signup/admin")
-    public ResponseEntity<ApiResponse<AuthenticationResponse>> registerAdmin(@Valid @RequestBody SignupRequest signupRequest) throws JsonProcessingException {
+    @PostMapping("/signup")
+    public ResponseEntity<ApiResponse<AuthenticationResponse>> signup(@Valid @RequestBody SignupRequest signupRequest) throws JsonProcessingException {
 
-        AuthenticationResponse authenticationResponse = this.authenticationService.signupAdmin(signupRequest);
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(HttpStatus.OK.value(), Message.SIGNUP_SUCCESS.getMessage(), authenticationResponse));
-    }
-
-    @PostMapping("/signup/user")
-    public ResponseEntity<ApiResponse<AuthenticationResponse>> registerUser(@Valid @RequestBody SignupRequest signupRequest) throws JsonProcessingException {
-
-        AuthenticationResponse authenticationResponse = this.authenticationService.signupUser(signupRequest);
+        AuthenticationResponse authenticationResponse = this.authenticationService.signup(signupRequest);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(HttpStatus.OK.value(), Message.SIGNUP_SUCCESS.getMessage(), authenticationResponse));
     }
 }

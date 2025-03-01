@@ -9,7 +9,5 @@ public interface AuthenticationService {
 
     AuthenticationResponse login(AuthenticationRequest authenticationRequest) throws JsonProcessingException;
 
-    AuthenticationResponse signupUser(SignupRequest signupRequest) throws JsonProcessingException;
-
-    AuthenticationResponse signupAdmin(SignupRequest signupRequest) throws JsonProcessingException;
+    AuthenticationResponse signup(SignupRequest signupRequest) throws JsonProcessingException;
 }

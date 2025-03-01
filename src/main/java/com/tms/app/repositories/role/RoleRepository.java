@@ -18,5 +18,8 @@ public interface RoleRepository extends JpaRepository<Role, UUID> {
     Optional<Role> findRoleByName(String roleName);
 
     @Query("SELECT r FROM Role r WHERE r.isActive = TRUE ")
-    List<Role> findAllRoles();
+    List<Role> findAllActiveRoles();
+
+    @Query("SELECT r FROM Role r WHERE lower(r.roleName) IN :roleNames AND r.isActive = TRUE")
+    List<Role> findActiveRolesByNames(List<String> roleNames);
 }

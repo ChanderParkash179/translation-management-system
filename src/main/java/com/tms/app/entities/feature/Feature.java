@@ -5,8 +5,8 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.type.SqlTypes;
 
-import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -21,7 +21,7 @@ public class Feature {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @JdbcTypeCode(Types.VARCHAR)
+    @JdbcTypeCode(SqlTypes.BINARY)
     private UUID id;
 
     @Column(name = "feature_label")

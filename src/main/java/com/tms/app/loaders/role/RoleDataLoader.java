@@ -25,7 +25,21 @@ public class RoleDataLoader {
                     Role.builder().roleName("ADMIN").isActive(true).build(),
                     Role.builder().roleName("USER").isActive(true).build()
             );
-            this.roleRepository.saveAll(roles);
+
+            List<Role> existingRoles = this.roleRepository.findActiveRolesByNames(
+                    roles.stream()
+                            .map(role -> role.getRoleName().toLowerCase())
+                            .toList());
+
+            List<Role> finalRoles = roles.stream()
+                    .filter(role -> !existingRoles.stream()
+                            .map(Role::getRoleName)
+                            .toList()
+                            .contains(role.getRoleName())
+                    ).toList();
+
+            if (!finalRoles.isEmpty())
+                this.roleRepository.saveAll(finalRoles);
             log.info("Roles inserted successfully!");
         };
     }

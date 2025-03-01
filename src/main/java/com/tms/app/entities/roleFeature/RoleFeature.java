@@ -7,6 +7,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.type.SqlTypes;
 
 import java.sql.Types;
 import java.time.LocalDateTime;
@@ -23,7 +24,7 @@ public class RoleFeature {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @JdbcTypeCode(Types.VARCHAR)
+    @JdbcTypeCode(SqlTypes.BINARY)
     private UUID id;
 
     @ManyToOne(cascade = CascadeType.ALL)

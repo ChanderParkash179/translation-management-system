@@ -1,21 +1,18 @@
 package com.tms.app.services.auth.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tms.app.dtos.auth.request.AuthenticationRequest;
 import com.tms.app.dtos.auth.request.SignupRequest;
 import com.tms.app.dtos.auth.response.AuthenticationResponse;
-import com.tms.app.entities.role.Role;
 import com.tms.app.entities.user.User;
 import com.tms.app.enums.Message;
 import com.tms.app.enums.RoleType;
-import com.tms.app.exceptions.AccountNonActiveException;
 import com.tms.app.exceptions.AlreadyExistsException;
-import com.tms.app.repositories.role.RoleRepository;
 import com.tms.app.repositories.user.UserRepository;
 import com.tms.app.security.JWTService;
 import com.tms.app.services.auth.AuthenticationService;
 import com.tms.app.services.redis.RedisService;
+import com.tms.app.services.role.RoleService;
 import com.tms.app.services.token.UserSessionService;
 import com.tms.app.utils.AppConstants;
 import com.tms.app.utils.AppLogger;
@@ -38,38 +35,31 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final AppLogger log = new AppLogger(AuthenticationServiceImpl.class);
 
     private final JWTService jwtService;
+    private final RoleService roleService;
     private final RedisService redisService;
     private final PasswordEncoder passwordEncoder;
     private final UserSessionService userSessionService;
     private final AuthenticationManager authenticationManager;
 
-    private final RoleRepository roleRepository;
     private final UserRepository userRepository;
 
     @Override
     public AuthenticationResponse login(AuthenticationRequest authenticationRequest) throws JsonProcessingException {
-        String cacheKey = AppConstants.LOGIN_CACHE_PREFIX + authenticationRequest.getUsername();
-        String cachedResponse = this.redisService.getData(cacheKey);
-        if (cachedResponse != null) {
-            log.info("Returning cached login response for user: {}", authenticationRequest.getUsername());
-            return new ObjectMapper().readValue(cachedResponse, AuthenticationResponse.class);
-        }
+
+        AuthenticationResponse cached = this.redisService.getCachedData(AppConstants.LOGIN_CACHE_PREFIX, authenticationRequest.getUsername(), "Returning cached login response for user", AuthenticationResponse.class);
+        if (cached != null) return cached;
 
         log.info("Authenticating User");
-        Optional<User> optionalUser = userRepository.findActiveUserByEmailOrUsername(authenticationRequest.getUsername());
-        if (optionalUser.isEmpty()) {
-            throw new BadCredentialsException(Message.INVALID_CREDENTIALS.getMessage());
-        }
-
-        User user = optionalUser.get();
-        if (!user.getIsActive()) {
-            throw new AccountNonActiveException("Account not Exists");
-        }
+        User user = userRepository.findActiveUserByEmailOrUsername(authenticationRequest.getUsername())
+                .orElseThrow(() -> {
+                    log.warn(Message.INVALID_CREDENTIALS.getMessage());
+                    return new BadCredentialsException(Message.INVALID_CREDENTIALS.getMessage());
+                });
 
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword()));
         var jwt = jwtService.generateToken(user);
         var refreshToken = this.jwtService.generateRefreshToken(new HashMap<>(), user);
-        userSessionService.saveUserSession(jwt, user);
+        this.userSessionService.saveUserSession(jwt, user);
 
         AuthenticationResponse authenticationResponse = AuthenticationResponse.builder()
                 .token(jwt)
@@ -77,31 +67,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .role(user.getRole().getRoleName())
                 .build();
 
-        redisService.saveData(cacheKey, new ObjectMapper().writeValueAsString(authenticationResponse));
+        this.redisService.saveData(AppConstants.LOGIN_CACHE_PREFIX + authenticationRequest.getUsername(), CustomUtils.writeAsJSON(AuthenticationResponse.class), 6000);
         log.info("User Authenticated Successfully");
 
         return authenticationResponse;
     }
 
     @Override
-    public AuthenticationResponse signupAdmin(SignupRequest signupRequest) throws JsonProcessingException {
-        return signupExtract(signupRequest, RoleType.ADMIN);
-    }
+    public AuthenticationResponse signup(SignupRequest signupRequest) throws JsonProcessingException {
 
-    @Override
-    public AuthenticationResponse signupUser(SignupRequest signupRequest) throws JsonProcessingException {
-        return signupExtract(signupRequest, RoleType.USER);
-    }
+        AuthenticationResponse cached = this.redisService.getCachedData(AppConstants.SIGNUP_CACHE_PREFIX, signupRequest.getEmail(), "Returning cached signup response for email", AuthenticationResponse.class);
+        if (cached != null) return cached;
 
-    private AuthenticationResponse signupExtract(SignupRequest signupRequest, RoleType roleType) throws JsonProcessingException {
-        String cacheKey = AppConstants.SIGNUP_CACHE_PREFIX + signupRequest.getEmail();
-        String cachedResponse = redisService.getData(cacheKey);
-        if (cachedResponse != null) {
-            log.info("Returning cached signup response for email: {}", signupRequest.getEmail());
-            return new ObjectMapper().readValue(cachedResponse, AuthenticationResponse.class);
-        }
-
-        Optional<User> optionalUser = userRepository.findActiveUserByEmail(signupRequest.getEmail());
+        Optional<User> optionalUser = this.userRepository.findActiveUserByEmail(signupRequest.getEmail());
         if (optionalUser.isPresent()) {
             throw new AlreadyExistsException(Message.DUPLICATE_EMAIL.getMessage());
         }
@@ -113,11 +91,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setIsActive(Boolean.TRUE);
         user.setCreatedAt(LocalDateTime.now());
 
-        Optional<Role> optionalRole = roleRepository.findRoleByName(roleType.getRoleType());
-        user.setRole(optionalRole.orElseThrow(() -> new RuntimeException("No Role Found")));
+        user.setRole(this.roleService.getRoleByName(RoleType.USER.getRoleType()));
 
-        User savedUser = userRepository.save(user);
-        userRepository.save(savedUser);
+        this.userRepository.save(user);
 
         var jwt = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
@@ -129,7 +105,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .role(user.getRole().getRoleName())
                 .build();
 
-        redisService.saveData(cacheKey, new ObjectMapper().writeValueAsString(authenticationResponse));
+        this.redisService.saveData(AppConstants.SIGNUP_CACHE_PREFIX + signupRequest.getEmail(), CustomUtils.writeAsJSON(AuthenticationResponse.class), 6);
         log.info("User Registered Successfully");
 
         return authenticationResponse;

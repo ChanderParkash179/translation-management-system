@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.tms.app.dtos.auth.request.AuthenticationRequest;
 import com.tms.app.dtos.auth.request.SignupRequest;
 import com.tms.app.dtos.auth.response.AuthenticationResponse;
+import com.tms.app.dtos.auth.response.SignupResponse;
 import com.tms.app.dtos.wrapper.ApiResponse;
 import com.tms.app.enums.Message;
 import com.tms.app.services.auth.AuthenticationService;
@@ -21,7 +22,7 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<AuthenticationResponse>> login(@Valid @RequestBody AuthenticationRequest authenticationRequest) throws JsonProcessingException {
+    public ResponseEntity<ApiResponse<AuthenticationResponse>> login(@Valid @RequestBody AuthenticationRequest authenticationRequest){
 
         AuthenticationResponse authenticationResponse = this.authenticationService.login(authenticationRequest);
         return ResponseEntity.status(HttpStatus.OK).body(
@@ -29,9 +30,9 @@ public class AuthenticationController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<ApiResponse<AuthenticationResponse>> signup(@Valid @RequestBody SignupRequest signupRequest) throws JsonProcessingException {
+    public ResponseEntity<ApiResponse<SignupResponse>> signup(@Valid @RequestBody SignupRequest signupRequest){
 
-        AuthenticationResponse authenticationResponse = this.authenticationService.signup(signupRequest);
+        SignupResponse authenticationResponse = this.authenticationService.signup(signupRequest);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(HttpStatus.OK.value(), Message.SIGNUP_SUCCESS.getMessage(), authenticationResponse));
     }
 }

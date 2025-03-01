@@ -18,9 +18,9 @@ public class RedisServiceImpl implements RedisService {
     private final ObjectMapper objectMapper;
 
     @Override
-    public void saveData(String key, String value, int expiryInSeconds) {
+    public void saveData(String key, String value, int expiryInMinutes) {
         log.info("saving in cache");
-        this.redisTemplate.opsForValue().set(key, value, expiryInSeconds, TimeUnit.SECONDS);
+        this.redisTemplate.opsForValue().set(key, value, expiryInMinutes, TimeUnit.MINUTES);
     }
 
     @Override

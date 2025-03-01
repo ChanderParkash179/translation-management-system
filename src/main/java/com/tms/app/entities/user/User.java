@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "`user`")
+@Table(name = "`user`", indexes = @Index(columnList = "email", unique = true))
 public class User implements UserDetails {
 
     @Id

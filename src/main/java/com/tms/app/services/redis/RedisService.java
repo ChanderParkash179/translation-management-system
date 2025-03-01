@@ -2,7 +2,7 @@ package com.tms.app.services.redis;
 
 public interface RedisService {
 
-    void saveData(String key, String value, int expiryInSeconds);
+    void saveData(String key, String value, int expiryInMinutes);
 
     String getData(String key);
 

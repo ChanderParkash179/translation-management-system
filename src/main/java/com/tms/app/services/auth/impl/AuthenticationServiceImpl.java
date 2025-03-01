@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.tms.app.dtos.auth.request.AuthenticationRequest;
 import com.tms.app.dtos.auth.request.SignupRequest;
 import com.tms.app.dtos.auth.response.AuthenticationResponse;
+import com.tms.app.dtos.auth.response.SignupResponse;
 import com.tms.app.entities.user.User;
 import com.tms.app.enums.Message;
 import com.tms.app.enums.RoleType;
@@ -13,7 +14,6 @@ import com.tms.app.repositories.user.UserRepository;
 import com.tms.app.security.JWTService;
 import com.tms.app.services.auth.AuthenticationService;
 import com.tms.app.services.redis.RedisService;
-import com.tms.app.services.token.UserSessionService;
 import com.tms.app.utils.AppConstants;
 import com.tms.app.utils.AppLogger;
 import com.tms.app.utils.CustomUtils;
@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @RequiredArgsConstructor
@@ -37,14 +38,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final JWTService jwtService;
     private final RedisService redisService;
     private final PasswordEncoder passwordEncoder;
-    private final UserSessionService userSessionService;
     private final AuthenticationManager authenticationManager;
 
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
 
     @Override
-    public AuthenticationResponse login(AuthenticationRequest authenticationRequest) throws JsonProcessingException {
+    public AuthenticationResponse login(AuthenticationRequest authenticationRequest) {
 
         AuthenticationResponse cached = this.redisService.getCachedData(AppConstants.LOGIN_CACHE_PREFIX, authenticationRequest.getUsername(), "Returning cached login response for user", AuthenticationResponse.class);
         if (cached != null) return cached;
@@ -57,9 +57,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 });
 
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword()));
+
         var jwt = jwtService.generateToken(user);
         var refreshToken = this.jwtService.generateRefreshToken(new HashMap<>(), user);
-        this.userSessionService.saveUserSession(jwt, user);
 
         AuthenticationResponse authenticationResponse = AuthenticationResponse.builder()
                 .token(jwt)
@@ -67,16 +67,23 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .role(user.getRole().getRoleName())
                 .build();
 
-        this.redisService.saveData(AppConstants.LOGIN_CACHE_PREFIX + authenticationRequest.getUsername(), CustomUtils.writeAsJSON(authenticationResponse), 6000);
+        CompletableFuture.runAsync(() ->
+        {
+            try {
+                this.redisService.saveData(AppConstants.LOGIN_CACHE_PREFIX + authenticationRequest.getUsername(), CustomUtils.writeAsJSON(authenticationResponse), 10);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        });
         log.info("User Authenticated Successfully");
 
         return authenticationResponse;
     }
 
     @Override
-    public AuthenticationResponse signup(SignupRequest signupRequest) throws JsonProcessingException {
+    public SignupResponse signup(SignupRequest signupRequest) {
 
-        AuthenticationResponse cached = this.redisService.getCachedData(AppConstants.SIGNUP_CACHE_PREFIX, signupRequest.getEmail(), "Returning cached signup response for email", AuthenticationResponse.class);
+        SignupResponse cached = this.redisService.getCachedData(AppConstants.SIGNUP_CACHE_PREFIX, signupRequest.getEmail(), "Returning cached signup response for email", SignupResponse.class);
         if (cached != null) return cached;
 
         Optional<User> optionalUser = this.userRepository.findActiveUserByEmail(signupRequest.getEmail());
@@ -95,17 +102,20 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         this.userRepository.save(user);
 
-        var jwt = jwtService.generateToken(user);
-        var refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
-        userSessionService.saveUserSession(jwt, user);
-
-        AuthenticationResponse authenticationResponse = AuthenticationResponse.builder()
-                .token(jwt)
-                .refreshToken(refreshToken)
+        SignupResponse authenticationResponse = SignupResponse.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .email(user.getEmail())
                 .role(user.getRole().getRoleName())
                 .build();
 
-        this.redisService.saveData(AppConstants.SIGNUP_CACHE_PREFIX + signupRequest.getEmail(), CustomUtils.writeAsJSON(authenticationResponse), 30);
+        CompletableFuture.runAsync(() -> {
+            try {
+                this.redisService.saveData(AppConstants.SIGNUP_CACHE_PREFIX + signupRequest.getEmail(), CustomUtils.writeAsJSON(authenticationResponse), 10);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        });
         log.info("User Registered Successfully");
 
         return authenticationResponse;

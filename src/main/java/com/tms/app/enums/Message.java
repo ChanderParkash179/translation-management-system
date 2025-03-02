@@ -22,7 +22,16 @@ public enum Message {
     INTERNAL_SERVER_ERROR("Unexpected Error. Please try again"),
     LOGIN_SUCCESS("User Logged In Successfully"),
     UNPROCESSABLE_ENTITY("The provided password is compromised and cannot be used"),
-    SIGNUP_SUCCESS("User Registered Successfully");
+    SIGNUP_SUCCESS("User Registered Successfully"),
+
+    // LOCALE
+    LOCALE_CREATED("locale created successfully"),
+    LOCALE_UPDATED("locale updated successfully"),
+    LOCALE_REMOVED("locale removed successfully"),
+    LOCALE_FOUNDED_BY_ID("locale founded by id successfully"),
+    LOCALE_FOUNDED_BY_CODE("locale founded by code successfully"),
+    LOCALE_NOT_FOUND("locale not found"),
+    LOCALE_LISTED("locale listed successfully");
     private final String message;
 
     Message(String message) {

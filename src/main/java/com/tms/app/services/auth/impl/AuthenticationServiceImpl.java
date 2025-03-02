@@ -1,6 +1,5 @@
 package com.tms.app.services.auth.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.tms.app.dtos.auth.request.AuthenticationRequest;
 import com.tms.app.dtos.auth.request.SignupRequest;
 import com.tms.app.dtos.auth.response.AuthenticationResponse;
@@ -24,7 +23,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -46,9 +44,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public AuthenticationResponse login(AuthenticationRequest authenticationRequest) {
 
-        AuthenticationResponse cached = this.redisService.getCachedData(AppConstants.LOGIN_CACHE_PREFIX, authenticationRequest.getUsername(), "Returning cached login response for user", AuthenticationResponse.class);
-        if (cached != null) return cached;
-
         log.info("Authenticating User");
         User user = this.userRepository.findActiveUserByEmailOrUsername(authenticationRequest.getUsername())
                 .orElseThrow(() -> {
@@ -58,66 +53,55 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword()));
 
-        var jwt = jwtService.generateToken(user);
-        var refreshToken = this.jwtService.generateRefreshToken(new HashMap<>(), user);
+        Object[] response = this.jwtTokenConcurrentCall(user);
 
         AuthenticationResponse authenticationResponse = AuthenticationResponse.builder()
-                .token(jwt)
-                .refreshToken(refreshToken)
+                .token((String) response[0])
+                .refreshToken((String) response[1])
                 .role(user.getRole().getRoleName())
                 .build();
 
-        CompletableFuture.runAsync(() ->
-        {
-            try {
-                this.redisService.saveData(AppConstants.LOGIN_CACHE_PREFIX + authenticationRequest.getUsername(), CustomUtils.writeAsJSON(authenticationResponse), 10);
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
-            }
-        });
         log.info("User Authenticated Successfully");
-
         return authenticationResponse;
     }
 
     @Override
     public SignupResponse signup(SignupRequest signupRequest) {
 
-        SignupResponse cached = this.redisService.getCachedData(AppConstants.SIGNUP_CACHE_PREFIX, signupRequest.getEmail(), "Returning cached signup response for email", SignupResponse.class);
-        if (cached != null) return cached;
-
         Optional<User> optionalUser = this.userRepository.findActiveUserByEmail(signupRequest.getEmail());
         if (optionalUser.isPresent()) {
+            log.info(Message.DUPLICATE_EMAIL.getMessage());
             throw new AlreadyExistsException(Message.DUPLICATE_EMAIL.getMessage());
         }
 
-        User user = new User();
-        user.setUsername(CustomUtils.generateUsername(signupRequest.getUsername()));
-        user.setEmail(signupRequest.getEmail());
-        user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
-        user.setIsActive(Boolean.TRUE);
-        user.setCreatedAt(LocalDateTime.now());
+        User user = User.builder()
+                .fullName(signupRequest.getFullName())
+                .username(CustomUtils.generateUsername(signupRequest.getUsername()))
+                .email(signupRequest.getEmail())
+                .password(passwordEncoder.encode(signupRequest.getPassword()))
+                .isActive(Boolean.TRUE)
+                .role(this.roleRepository.findRoleByName(RoleType.USER.getRoleType()).orElse(null))
+                .build();
 
-        user.setRole(this.roleRepository.findRoleByName(RoleType.USER.getRoleType()).orElse(null));
-
+        log.info("saving user");
         this.userRepository.save(user);
 
-        SignupResponse authenticationResponse = SignupResponse.builder()
+        return SignupResponse.builder()
                 .id(user.getId())
+                .fullName(user.getFullName())
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .role(user.getRole().getRoleName())
                 .build();
+    }
 
+    private Object[] jwtTokenConcurrentCall(User user) {
+        var jwt = jwtService.generateToken(user);
+        var refreshToken = this.jwtService.generateRefreshToken(new HashMap<>(), user);
         CompletableFuture.runAsync(() -> {
-            try {
-                this.redisService.saveData(AppConstants.SIGNUP_CACHE_PREFIX + signupRequest.getEmail(), CustomUtils.writeAsJSON(authenticationResponse), 10);
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
-            }
+            redisService.saveData(AppConstants.JWT_SESSION_PREFIX + jwt, "true", 30);
         });
-        log.info("User Registered Successfully");
 
-        return authenticationResponse;
+        return new Object[]{jwt, refreshToken};
     }
 }

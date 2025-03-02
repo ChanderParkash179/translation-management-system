@@ -1,9 +1,20 @@
 package com.tms.app.utils;
 
 public class AppConstants {
-    public static final String LOGIN_CACHE_PREFIX = "LOGIN_";
-    public static final String SIGNUP_CACHE_PREFIX = "SIGNUP_";
+    public static final String LOGIN_CACHE_PREFIX = "login:";
+    public static final String SIGNUP_CACHE_PREFIX = "signup:";
 
+    public static final String LOCALE_CACHE_FIND_CODE_PREFIX = "locale:code:";
+    public static final String LOCALE_CACHE_FIND_ID_PREFIX = "locale:id:";
+    public static final String LOCALE_CACHE_FIND_ALL_PREFIX = "locale:all:";
+    public static final String LOCALE_CACHE_FIND_ALL_PAGE_PREFIX = "locale:all:page:";
+    public static final String LOCALE_CACHE_CREATE_PREFIX = "locale:create:";
+
+    public static final String FIND_ALL_SIZE_PREFIX = ":size:";
+    public static final String JWT_SESSION_PREFIX = "session:jwt:";
+
+    public final static String PAGE_NO = "0";
+    public final static String PAGE_SIZE = "10";
 
     public static final String DOC_TITLE = "translation-management-system";
     public static final String DOC_VERSION = "1.0.0";

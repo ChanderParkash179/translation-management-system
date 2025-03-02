@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "role")
+@Table(name = "`role`", indexes = @Index(columnList = "role_name", unique = true))
 public class Role {
 
     @Id

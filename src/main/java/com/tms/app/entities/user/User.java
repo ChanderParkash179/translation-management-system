@@ -11,7 +11,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.UUID;
@@ -24,7 +23,7 @@ import java.util.stream.Stream;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "`user`", indexes = @Index(columnList = "email", unique = true))
+@Table(name = "`user`", indexes = @Index(columnList = "email, username", unique = true))
 public class User implements UserDetails {
 
     @Id
@@ -41,15 +40,12 @@ public class User implements UserDetails {
     @Column(name = "email", unique = true)
     private String email;
 
-    @Column(name = "first_name")
-    private String firstName;
-
-    @Column(name = "last_name")
-    private String lastName;
+    @Column(name = "full_name")
+    private String fullName;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "role_id")
-    @JdbcTypeCode(Types.VARCHAR)
+    @JdbcTypeCode(SqlTypes.BINARY)
     private Role role;
 
     @Column(name = "is_active")
@@ -93,9 +89,5 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    public String getFullName() {
-        return this.getFirstName() + " " + ((this.getLastName() != null) ? this.getLastName() : "");
     }
 }

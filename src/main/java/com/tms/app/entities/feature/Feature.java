@@ -16,7 +16,7 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "feature")
+@Table(name = "`feature`")
 public class Feature {
 
     @Id

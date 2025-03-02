@@ -16,7 +16,10 @@ public class SignupResponse {
     @Schema(description = "Unique identifier of the user", example = "550e8400-e29b-41d4-a716-446655440000")
     private UUID id;
 
-    @Schema(description = "Username chosen by the user", example = "johndoe")
+    @Schema(description = "Full Name chosen by the user", example = "John Doe")
+    private String fullName;
+
+    @Schema(description = "Username chosen by the user", example = "johndoe12")
     private String username;
 
     @Schema(description = "Email address of the user", example = "john.doe@example.com")
@@ -29,6 +32,7 @@ public class SignupResponse {
     public String toString() {
         return "SignupResponse{" +
                 "id=" + id +
+                ", fullName='" + fullName + '\'' +
                 ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
                 ", role='" + role + '\'' +

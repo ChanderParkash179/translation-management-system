@@ -1,6 +1,6 @@
 package com.tms.app.entities.translationTag;
 
-import com.tms.app.entities.Translation;
+import com.tms.app.entities.translation.Translation;
 import com.tms.app.entities.tag.Tag;
 import jakarta.persistence.*;
 import lombok.*;

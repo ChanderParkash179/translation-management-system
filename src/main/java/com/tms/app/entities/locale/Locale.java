@@ -24,7 +24,7 @@ public class Locale {
     @JdbcTypeCode(SqlTypes.BINARY)
     private UUID id;
 
-    @Column(name = "locale_code")
+    @Column(name = "locale_code", unique = true)
     private String localeCode;
 
     @Column(name = "locale_name")
@@ -46,4 +46,12 @@ public class Locale {
     @UpdateTimestamp
     @Column(name = "modified_at", insertable = false)
     private LocalDateTime modifiedAt;
+
+    public Locale(String localeCode, String localeName, String localeLanguage, Boolean isDefault){
+        this.localeCode = localeCode;
+        this.localeName = localeName;
+        this.localeLanguage = localeLanguage;
+        this.isDefault = isDefault;
+        this.isActive = true;
+    }
 }

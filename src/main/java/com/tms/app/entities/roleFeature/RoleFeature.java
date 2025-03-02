@@ -19,7 +19,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "role_feature")
+@Table(name = "`role_feature`", indexes = @Index(columnList = "feature_id, role_id", unique = true))
 public class RoleFeature {
 
     @Id

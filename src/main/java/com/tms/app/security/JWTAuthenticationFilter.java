@@ -1,8 +1,8 @@
 package com.tms.app.security;
 
-import com.tms.app.entities.userSession.UserSession;
 import com.tms.app.exceptions.TokenExpiredException;
-import com.tms.app.services.token.UserSessionService;
+import com.tms.app.services.redis.RedisService;
+import com.tms.app.utils.AppConstants;
 import com.tms.app.utils.AppLogger;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
@@ -28,7 +28,7 @@ import static com.tms.app.enums.Message.SESSION_EXPIRED;
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
     private final JWTService jwtService;
-    private final UserSessionService userSessionService;
+    private final RedisService redisService;
     private final UserDetailsService userDetailsService;
     private final HandlerExceptionResolver resolver;
 
@@ -36,12 +36,12 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
     public JWTAuthenticationFilter(
             JWTService jwtService,
-            UserSessionService userSessionService,
+            RedisService redisService,
             UserDetailsService userDetailsService,
             @Qualifier("handlerExceptionResolver") HandlerExceptionResolver resolver) {
 
         this.jwtService = jwtService;
-        this.userSessionService = userSessionService;
+        this.redisService = redisService;
         this.userDetailsService = userDetailsService;
         this.resolver = resolver;
     }
@@ -51,7 +51,6 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) {
         try {
-
             String header = request.getHeader(HttpHeaders.AUTHORIZATION);
 
             final String jwt;
@@ -65,11 +64,10 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             userEmail = this.jwtService.extractUsername(jwt);
 
             if (!StringUtils.isEmpty(userEmail) && SecurityContextHolder.getContext().getAuthentication() == null) {
-
                 UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
-                boolean isTokenValid = userSessionService.findSessionByToken(jwt)
-                        .map(UserSession::getIsActive)
-                        .orElse(false);
+                String sessionKey = AppConstants.JWT_SESSION_PREFIX + jwt;
+                String cachedSession = this.redisService.getData(sessionKey);
+                boolean isTokenValid = Boolean.parseBoolean(cachedSession);
 
                 if (jwtService.isTokenValid(jwt, userDetails) && isTokenValid) {
                     SecurityContext context = SecurityContextHolder.createEmptyContext();

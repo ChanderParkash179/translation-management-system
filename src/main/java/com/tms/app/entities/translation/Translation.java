@@ -1,5 +1,6 @@
-package com.tms.app.entities;
+package com.tms.app.entities.translation;
 
+import com.tms.app.entities.locale.Locale;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -9,7 +10,6 @@ import org.hibernate.type.SqlTypes;
 
 import java.sql.Types;
 import java.time.LocalDateTime;
-import java.util.Locale;
 import java.util.UUID;
 
 @Setter

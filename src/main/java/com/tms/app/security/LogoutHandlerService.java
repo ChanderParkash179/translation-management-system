@@ -1,6 +1,7 @@
 package com.tms.app.security;
 
-import com.tms.app.services.token.UserSessionService;
+import com.tms.app.services.redis.RedisService;
+import com.tms.app.utils.AppConstants;
 import com.tms.app.utils.AppLogger;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class LogoutHandlerService implements LogoutHandler {
 
-    private final UserSessionService userSessionService;
+    private final RedisService redisService;
     private final AppLogger log = new AppLogger(LogoutHandlerService.class);
 
     @Override
@@ -30,7 +31,7 @@ public class LogoutHandlerService implements LogoutHandler {
             log.info("Extracting Token from Header");
             jwtToken = authHeader.substring(bearer.length());
             log.info("Deleting User Session");
-            userSessionService.deleteSession(jwtToken);
+            this.redisService.deleteData(AppConstants.JWT_SESSION_PREFIX + jwtToken);
             log.info("Clearing Security Context");
             SecurityContextHolder.clearContext();
             log.info("User Logged Out Successfully");

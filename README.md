@@ -63,6 +63,7 @@
    > * Redis (for caching)
    > * Docker
    > * Swagger by OpenAPI
+   > * GitHub (Git)
    > * Command Line Runners & Data Loaders
    > * Unit Testing
 

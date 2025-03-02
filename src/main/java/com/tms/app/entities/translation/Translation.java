@@ -53,4 +53,12 @@ public class Translation {
 
     @OneToMany(mappedBy = "translation", cascade = CascadeType.ALL)
     private List<TranslationTag> translationTag;
+
+    public Translation(UUID uuid, String key, String content, Locale locale, boolean b) {
+        this.id = uuid;
+        this.translationKey = key;
+        this.content = content;
+        this.locale = locale;
+        this.isActive = b;
+    }
 }

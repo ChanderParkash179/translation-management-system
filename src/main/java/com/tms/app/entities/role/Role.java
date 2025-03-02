@@ -37,4 +37,9 @@ public class Role {
     @UpdateTimestamp
     @Column(name = "modified_at", insertable = false)
     private LocalDateTime modifiedAt;
+
+    public Role(String roleType) {
+        this.roleName = roleType.toUpperCase();
+        this.isActive = true;
+    }
 }

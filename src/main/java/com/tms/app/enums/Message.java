@@ -33,6 +33,15 @@ public enum Message {
     LOCALE_NOT_FOUND("locale not found"),
     LOCALE_LISTED("locale listed successfully"),
 
+    // TRANSLATION
+    TRANSLATION_CREATED("translation created successfully"),
+    TRANSLATION_UPDATED("translation updated successfully"),
+    TRANSLATION_EXPORT("translation exported successfully"),
+    TRANSLATION_FOUNDED_BY_ID("translation founded by id successfully"),
+    TRANSLATION_FOUNDED_BY_KEY_WITH_OR_WITHOUT_CODE("translation founded by key with or without code successfully"),
+    TRANSLATION_NOT_FOUND("translation not found"),
+    TRANSLATION_LISTED("translation listed successfully"),
+
     // TAG
     TAG_CREATED("tag created successfully"),
     TAG_UPDATED("tag updated successfully"),

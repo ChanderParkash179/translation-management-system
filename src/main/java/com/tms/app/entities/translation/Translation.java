@@ -1,6 +1,7 @@
 package com.tms.app.entities.translation;
 
 import com.tms.app.entities.locale.Locale;
+import com.tms.app.entities.translationTag.TranslationTag;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -10,6 +11,7 @@ import org.hibernate.type.SqlTypes;
 
 import java.sql.Types;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Setter
@@ -48,4 +50,7 @@ public class Translation {
     @UpdateTimestamp
     @Column(name = "modified_at", insertable = false)
     private LocalDateTime modifiedAt;
+
+    @OneToMany(mappedBy = "translation", cascade = CascadeType.ALL)
+    private List<TranslationTag> translationTag;
 }

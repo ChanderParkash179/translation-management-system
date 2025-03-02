@@ -139,26 +139,26 @@ public class TagServiceImpl implements TagService {
         if (cached != null) return cached;
 
         Pageable pageable = PageRequest.of(pageNo, pageSize);
-        Page<Tag> TagPage = this.tagRepository.findAll(pageable);
+        Page<Tag> tagPage = this.tagRepository.findAll(pageable);
 
         log.info("Tag Page fetched Successfully");
 
-        if (TagPage.getContent().isEmpty()) {
+        if (tagPage.getContent().isEmpty()) {
             log.info("No Tags found");
             return PaginationResponse.makeEmptyResponse();
         }
 
-        log.info("Total Tags found: {}", TagPage.getContent().size());
+        log.info("Total Tags found: {}", tagPage.getContent().size());
 
         CompletableFuture.runAsync(() -> {
             try {
-                redisService.saveData(AppConstants.TAG_CACHE_FIND_ALL_PAGE_PREFIX + pageNo + AppConstants.FIND_ALL_SIZE_PREFIX + pageSize, CustomUtils.writeAsJSON(TagPage), 10);
+                redisService.saveData(AppConstants.TAG_CACHE_FIND_ALL_PAGE_PREFIX + pageNo + AppConstants.FIND_ALL_SIZE_PREFIX + pageSize, CustomUtils.writeAsJSON(tagPage), 10);
             } catch (JsonProcessingException e) {
                 log.error("Failed to cache paginated Tags: {}", e.getMessage());
             }
         });
 
-        return PaginationResponse.makeResponse(TagPage, TagResponse::new);
+        return PaginationResponse.makeResponse(tagPage, TagResponse::new);
     }
 
     private Tag findByTagCode(String name) {

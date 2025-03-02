@@ -26,12 +26,12 @@ public class TranslationTag {
     @JdbcTypeCode(SqlTypes.BINARY)
     private UUID id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "translation_id")
     @JdbcTypeCode(SqlTypes.BINARY)
     private Translation translation;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "tag_id")
     @JdbcTypeCode(SqlTypes.BINARY)
     private Tag tag;

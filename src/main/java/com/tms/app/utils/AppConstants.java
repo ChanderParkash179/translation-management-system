@@ -1,22 +1,25 @@
 package com.tms.app.utils;
 
 public class AppConstants {
-    public static final String LOGIN_CACHE_PREFIX = "login:";
-    public static final String SIGNUP_CACHE_PREFIX = "signup:";
+    public static final String LOGIN_CACHE_PREFIX = "login_";
+    public static final String SIGNUP_CACHE_PREFIX = "signup_";
 
     // LOCALE
-    public static final String LOCALE_CACHE_FIND_CODE_PREFIX = "locale:code:";
-    public static final String LOCALE_CACHE_FIND_ID_PREFIX = "locale:id:";
-    public static final String LOCALE_CACHE_FIND_ALL_PREFIX = "locale:all:";
-    public static final String LOCALE_CACHE_FIND_ALL_PAGE_PREFIX = "locale:all:page:";
+    public static final String LOCALE_CACHE_FIND_CODE_PREFIX = "locale_code_";
+    public static final String LOCALE_CACHE_FIND_ID_PREFIX = "locale_id_";
+    public static final String LOCALE_CACHE_FIND_ALL_PREFIX = "locale_all_";
+    public static final String LOCALE_CACHE_FIND_ALL_PAGE_PREFIX = "locale_all_page_";
 
     // TAG
-    public static final String TAG_CACHE_FIND_CODE_PREFIX = "tag:code:";
-    public static final String TAG_CACHE_FIND_ID_PREFIX = "tag:id:";
-    public static final String TAG_CACHE_FIND_ALL_PREFIX = "tag:all:";
-    public static final String TAG_CACHE_FIND_ALL_PAGE_PREFIX = "tag:all:page:";
+    public static final String TAG_CACHE_FIND_CODE_PREFIX = "tag_code_";
+    public static final String TAG_CACHE_FIND_ID_PREFIX = "tag_id_";
+    public static final String TAG_CACHE_FIND_ALL_PREFIX = "tag_all_";
+    public static final String TAG_CACHE_FIND_ALL_PAGE_PREFIX = "tag_all_page_";
 
-    public static final String FIND_ALL_SIZE_PREFIX = ":size:";
+    public static final String TRANSLATION_CACHE_PREFIX = "translation:";
+    public static final String TRANSLATION_JSON_EXPORT_PREFIX = "translation:export:";
+
+    public static final String FIND_ALL_SIZE_PREFIX = "_size_";
     public static final String JWT_SESSION_PREFIX = "session:jwt:";
 
     public final static String PAGE_NO = "0";

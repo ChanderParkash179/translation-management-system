@@ -1,5 +1,6 @@
 package com.tms.app.entities.tag;
 
+import com.tms.app.entities.translationTag.TranslationTag;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -8,6 +9,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Setter
@@ -40,6 +42,9 @@ public class Tag {
     @UpdateTimestamp
     @Column(name = "modified_at", insertable = false)
     private LocalDateTime modifiedAt;
+
+    @OneToMany(mappedBy = "tag", cascade = CascadeType.ALL)
+    private List<TranslationTag> translationTag;
 
     public Tag(String tagName, String tagDescription){
         this.tagName = tagName;

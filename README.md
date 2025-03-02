@@ -49,3 +49,22 @@
     > * before executing below command make sure to have a default locale in database
     > * type `java -jar translation-management-system-0.0.1-SNAPSHOT.jar --populate-data=100000`
     > * above number is up to your choice
+
+9. #### ERD
+    ![ERD](git_images/ERD.png)
+    
+10. #### Techs, Tools & Functionalities Used
+   > * Java 17
+   > * Spring Boot 3.x.x
+   > * Spring Security & JWT (JSON Web Tokens)
+   > * Spring Data JPA
+   > * Role Base Authentication
+   > * PostgreSQL
+   > * Redis (for caching)
+   > * Docker
+   > * Swagger by OpenAPI
+   > * Command Line Runners & Data Loaders
+   > * Unit Testing
+
+
+### Developer: Chander Parkash (chanderparkash179@gmail.com)

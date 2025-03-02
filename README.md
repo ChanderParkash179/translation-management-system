@@ -46,5 +46,6 @@
 
 8. #### running the factory command for db-seed
     > * Navigate to `target` folder by typing `cd target`
+    > * before executing below command make sure to have a default locale in database
     > * type `java -jar translation-management-system-0.0.1-SNAPSHOT.jar --populate-data=100000`
     > * above number is up to your choice

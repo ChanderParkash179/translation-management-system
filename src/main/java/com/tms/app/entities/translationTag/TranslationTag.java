@@ -9,7 +9,6 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.SqlTypes;
 
-import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -29,12 +28,12 @@ public class TranslationTag {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "translation_id")
-    @JdbcTypeCode(Types.VARCHAR)
+    @JdbcTypeCode(SqlTypes.BINARY)
     private Translation translation;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "tag_id")
-    @JdbcTypeCode(Types.VARCHAR)
+    @JdbcTypeCode(SqlTypes.BINARY)
     private Tag tag;
 
     @Column(name = "is_active")

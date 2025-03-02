@@ -4,17 +4,18 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tms.app.dtos.wrapper.PaginationResponse;
 import com.tms.app.services.redis.RedisService;
-import com.tms.app.utils.AppLogger;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RedisServiceImpl implements RedisService {
-    private final AppLogger log = new AppLogger(RedisServiceImpl.class);
 
     private final StringRedisTemplate redisTemplate;
     private final ObjectMapper objectMapper;
@@ -43,7 +44,7 @@ public class RedisServiceImpl implements RedisService {
         log.info("checking cache for {}", cacheKey);
 
         String cachedResponse = this.getData(cacheKey);
-        log.info("cache response {}", cachedResponse);
+        log.info("validating cache response");
 
         if (cachedResponse != null) {
             log.info("{}: {}", logMessage, value);
@@ -59,17 +60,17 @@ public class RedisServiceImpl implements RedisService {
 
     @Override
     public <T> PaginationResponse<T> getCachedData(String key, String logMessage, TypeReference<PaginationResponse<T>> typeRef) {
-        log.info("checking cache for key_value : {}", key);
+        log.info("checking paginated cache for key_value : {}", key);
 
-        String cachedResponse = this.getData(key);
-        log.info("cache response {}", cachedResponse);
+        String paginatedCachedResponse = this.getData(key);
+        log.info("validating cache paginated response");
 
-        if (cachedResponse != null) {
+        if (paginatedCachedResponse != null) {
             log.info("{}: {}", logMessage, key);
             try {
-                return objectMapper.readValue(cachedResponse, typeRef);
+                return objectMapper.readValue(paginatedCachedResponse, typeRef);
             } catch (Exception e) {
-                log.error("Failed to deserialize cached data for key {}: {}", key, e.getMessage());
+                log.error("Failed to deserialize paginated cached data for key {}: {}", key, e.getMessage());
                 return null;
             }
         }
@@ -79,6 +80,6 @@ public class RedisServiceImpl implements RedisService {
     @Override
     public void clearAllCache() {
         log.info("clearing all cached data");
-        this.redisTemplate.getConnectionFactory().getConnection().flushDb();
+        Objects.requireNonNull(this.redisTemplate.getConnectionFactory()).getConnection().serverCommands().flushDb();
     }
 }

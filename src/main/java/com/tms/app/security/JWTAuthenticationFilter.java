@@ -3,13 +3,14 @@ package com.tms.app.security;
 import com.tms.app.exceptions.TokenExpiredException;
 import com.tms.app.services.redis.RedisService;
 import com.tms.app.utils.AppConstants;
-import com.tms.app.utils.AppLogger;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
@@ -24,6 +25,7 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import static com.tms.app.enums.Message.SESSION_EXPIRED;
 
+@Slf4j
 @Component
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
@@ -31,8 +33,6 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     private final RedisService redisService;
     private final UserDetailsService userDetailsService;
     private final HandlerExceptionResolver resolver;
-
-    private final AppLogger log = new AppLogger(JWTAuthenticationFilter.class);
 
     public JWTAuthenticationFilter(
             JWTService jwtService,

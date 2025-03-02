@@ -14,9 +14,10 @@ import com.tms.app.security.JWTService;
 import com.tms.app.services.auth.AuthenticationService;
 import com.tms.app.services.redis.RedisService;
 import com.tms.app.utils.AppConstants;
-import com.tms.app.utils.AppLogger;
 import com.tms.app.utils.CustomUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,11 +28,10 @@ import java.util.HashMap;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
-
-    private final AppLogger log = new AppLogger(AuthenticationServiceImpl.class);
 
     private final JWTService jwtService;
     private final RedisService redisService;

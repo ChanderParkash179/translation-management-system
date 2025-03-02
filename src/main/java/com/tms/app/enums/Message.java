@@ -31,7 +31,17 @@ public enum Message {
     LOCALE_FOUNDED_BY_ID("locale founded by id successfully"),
     LOCALE_FOUNDED_BY_CODE("locale founded by code successfully"),
     LOCALE_NOT_FOUND("locale not found"),
-    LOCALE_LISTED("locale listed successfully");
+    LOCALE_LISTED("locale listed successfully"),
+
+    // TAG
+    TAG_CREATED("tag created successfully"),
+    TAG_UPDATED("tag updated successfully"),
+    TAG_REMOVED("tag removed successfully"),
+    TAG_FOUNDED_BY_ID("tag founded by id successfully"),
+    TAG_FOUNDED_BY_NAME("tag founded by name successfully"),
+    TAG_NOT_FOUND("tag not found"),
+    TAG_LISTED("tag listed successfully");
+
     private final String message;
 
     Message(String message) {

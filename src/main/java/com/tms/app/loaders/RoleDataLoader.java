@@ -3,8 +3,9 @@ package com.tms.app.loaders;
 import com.tms.app.entities.role.Role;
 import com.tms.app.repositories.role.RoleRepository;
 import com.tms.app.services.redis.RedisService;
-import com.tms.app.utils.AppLogger;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,11 +13,10 @@ import org.springframework.core.annotation.Order;
 
 import java.util.*;
 
+@Slf4j
 @Configuration
 @RequiredArgsConstructor
 public class RoleDataLoader {
-
-    private final AppLogger log = new AppLogger(RoleDataLoader.class);
 
     private final RoleRepository roleRepository;
 

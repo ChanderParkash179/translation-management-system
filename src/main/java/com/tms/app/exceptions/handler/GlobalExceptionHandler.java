@@ -3,9 +3,9 @@ package com.tms.app.exceptions.handler;
 import com.tms.app.dtos.wrapper.ErrorResponse;
 import com.tms.app.enums.Message;
 import com.tms.app.exceptions.*;
-import com.tms.app.utils.AppLogger;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.security.SignatureException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -25,10 +25,9 @@ import java.util.Map;
 
 import static org.springframework.http.HttpStatus.*;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
-    private final AppLogger log = new AppLogger(GlobalExceptionHandler.class);
 
     @ResponseStatus(BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)

@@ -40,4 +40,10 @@ public class Tag {
     @UpdateTimestamp
     @Column(name = "modified_at", insertable = false)
     private LocalDateTime modifiedAt;
+
+    public Tag(String tagName, String tagDescription){
+        this.tagName = tagName;
+        this.tagDescription = tagDescription;
+        this.isActive = true;
+    }
 }

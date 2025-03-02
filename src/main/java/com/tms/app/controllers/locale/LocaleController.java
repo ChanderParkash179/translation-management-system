@@ -47,7 +47,7 @@ public class LocaleController {
     public ResponseEntity<APIResponse<LocaleResponse>> findByCode(@PathVariable("code") String code) {
         LocaleResponse response = this.localeService.findByCode(code);
         return ResponseEntity.status(HttpStatus.OK).body(
-                APIResponse.success(HttpStatus.OK.value(), Message.LOCALE_FOUNDED_BY_ID.getMessage(), response));
+                APIResponse.success(HttpStatus.OK.value(), Message.LOCALE_FOUNDED_BY_CODE.getMessage(), response));
     }
 
     @GetMapping

@@ -107,9 +107,6 @@ public class LocaleServiceImpl implements LocaleService {
         log.info("finding locale by id");
         log.info("finding locale by id: {}", id);
 
-        LocaleResponse cached = redisService.getCachedData(AppConstants.LOCALE_CACHE_FIND_ID_PREFIX, id.toString(), "Returning cached locale by id", LocaleResponse.class);
-        if (cached != null) return cached;
-
         Locale locale = this.localeRepository.findById(id).orElseThrow(() -> {
             log.error("locale not found by id");
             return new BadRequestException("locale not found by id");
@@ -123,9 +120,6 @@ public class LocaleServiceImpl implements LocaleService {
     public LocaleResponse findByCode(String code) {
         log.info("finding locale by code");
         log.info("finding locale by code: {}", code);
-
-        LocaleResponse cached = this.redisService.getCachedData(AppConstants.LOCALE_CACHE_FIND_CODE_PREFIX, code, "Returning cached locale response for code", LocaleResponse.class);
-        if (cached != null) return cached;
 
         log.info("sending response of locale by code");
         return new LocaleResponse(this.findByLocaleCode(code));

@@ -101,9 +101,6 @@ public class TagServiceImpl implements TagService {
         log.info("finding Tag by id");
         log.info("finding Tag by id: {}", id);
 
-        TagResponse cached = redisService.getCachedData(AppConstants.TAG_CACHE_FIND_ID_PREFIX, id.toString(), "Returning cached Tag by id", TagResponse.class);
-        if (cached != null) return cached;
-
         Tag Tag = this.tagRepository.findById(id).orElseThrow(() -> {
             log.error("Tag not found by id");
             return new BadRequestException("Tag not found by id");
@@ -117,9 +114,6 @@ public class TagServiceImpl implements TagService {
     public TagResponse findByName(String name) {
         log.info("finding Tag by name");
         log.info("finding Tag by name: {}", name);
-
-        TagResponse cached = this.redisService.getCachedData(AppConstants.TAG_CACHE_FIND_CODE_PREFIX, name, "Returning cached Tag response for name", TagResponse.class);
-        if (cached != null) return cached;
 
         log.info("sending response of Tag by name");
         return new TagResponse(this.findByTagCode(name));

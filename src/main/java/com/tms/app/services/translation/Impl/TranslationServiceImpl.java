@@ -76,21 +76,8 @@ public class TranslationServiceImpl implements TranslationService {
 
     @Override
     public TranslationResponse get(String key, String localeCode) {
-        String cacheKey = AppConstants.TRANSLATION_CACHE_PREFIX + key + ":" + localeCode;
-
-        // Try cache first
-        Translation cached = redisService.getCachedData(AppConstants.TRANSLATION_CACHE_PREFIX, key + ":" + localeCode, "Translation found in cache", Translation.class);
-        if (cached != null) return this.mapToResponse(cached);
-
         Translation translation = translationRepository.findByKeyAndLocaleCode(key, localeCode)
                 .orElseThrow(() -> new BadRequestException("Translation not found"));
-
-        // Cache the result
-        try {
-            redisService.saveData(cacheKey, CustomUtils.writeAsJSON(translation), 30);
-        } catch (JsonProcessingException e) {
-            log.error("Failed to cache translation: {}", e.getMessage());
-        }
 
         return this.mapToResponse(translation);
     }

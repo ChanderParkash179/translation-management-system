@@ -67,5 +67,9 @@
    > * Command Line Runners & Data Loaders
    > * Unit Testing
 
+#### NOTE: use queries like below to fulfill the requirement of binary IDs other wise you'll face issues example query is given below
+   > * SELECT *
+       FROM public.translation_tag
+       WHERE encode(translation_id, 'hex') = REPLACE('be114817-a851-4f66-90a9-9f5cb66cc77c', '-', '');
 
 ### Developer: Chander Parkash (chanderparkash179@gmail.com)

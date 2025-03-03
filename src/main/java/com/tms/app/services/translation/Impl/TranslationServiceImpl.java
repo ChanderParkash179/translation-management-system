@@ -71,7 +71,7 @@ public class TranslationServiceImpl implements TranslationService {
         redisService.deleteData(AppConstants.TRANSLATION_CACHE_PREFIX + request.getTranslationKey() + ":" + request.getLocaleCode());
         redisService.deleteData(AppConstants.TRANSLATION_JSON_EXPORT_PREFIX + request.getLocaleCode());
 
-        return this.mapToResponse(translation);
+        return this.mapToResponse(savedTranslation);
     }
 
     @Override

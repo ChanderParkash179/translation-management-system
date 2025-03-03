@@ -40,8 +40,8 @@ public class TranslationController {
     })
     public ResponseEntity<APIResponse<TranslationResponse>> create(@Valid @RequestBody TranslationRequest request) {
         TranslationResponse response = this.translationService.create(request);
-        return ResponseEntity.status(HttpStatus.OK).body(
-                APIResponse.success(HttpStatus.OK.value(), Message.TRANSLATION_CREATED.getMessage(), response));
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                APIResponse.success(HttpStatus.CREATED.value(), Message.TRANSLATION_CREATED.getMessage(), response));
     }
 
     @GetMapping("/{key}")

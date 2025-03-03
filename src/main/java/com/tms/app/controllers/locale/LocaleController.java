@@ -37,8 +37,8 @@ public class LocaleController {
     })
     public ResponseEntity<APIResponse<LocaleResponse>> create(@Valid @RequestBody LocaleRequest request) {
         LocaleResponse response = this.localeService.create(request);
-        return ResponseEntity.status(HttpStatus.OK).body(
-                APIResponse.success(HttpStatus.OK.value(), Message.LOCALE_CREATED.getMessage(), response));
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                APIResponse.success(HttpStatus.CREATED.value(), Message.LOCALE_CREATED.getMessage(), response));
     }
 
     @PatchMapping

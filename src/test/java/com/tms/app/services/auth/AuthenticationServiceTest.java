@@ -3,7 +3,6 @@ package com.tms.app.services.auth;
 import com.tms.app.dtos.auth.request.AuthenticationRequest;
 import com.tms.app.dtos.auth.request.SignupRequest;
 import com.tms.app.dtos.auth.response.AuthenticationResponse;
-import com.tms.app.dtos.auth.response.SignupResponse;
 import com.tms.app.entities.role.Role;
 import com.tms.app.entities.user.User;
 import com.tms.app.enums.RoleType;
@@ -14,7 +13,6 @@ import com.tms.app.security.JWTService;
 import com.tms.app.services.auth.impl.AuthenticationServiceImpl;
 import com.tms.app.services.redis.RedisService;
 import com.tms.app.utils.AppConstants;
-import com.tms.app.utils.CustomUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,7 +26,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.HashMap;
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;

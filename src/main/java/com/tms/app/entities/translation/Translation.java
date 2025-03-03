@@ -51,7 +51,7 @@ public class Translation {
     @Column(name = "modified_at", insertable = false)
     private LocalDateTime modifiedAt;
 
-    @OneToMany(mappedBy = "translation", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "translation", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<TranslationTag> translationTag;
 
     public Translation(UUID uuid, String key, String content, Locale locale, boolean b) {

@@ -37,8 +37,8 @@ public class TagController {
     })
     public ResponseEntity<APIResponse<TagResponse>> create(@Valid @RequestBody TagRequest request) {
         TagResponse response = this.tagService.create(request);
-        return ResponseEntity.status(HttpStatus.OK).body(
-                APIResponse.success(HttpStatus.OK.value(), Message.TAG_CREATED.getMessage(), response));
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                APIResponse.success(HttpStatus.CREATED.value(), Message.TAG_CREATED.getMessage(), response));
     }
 
     @PatchMapping

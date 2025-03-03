@@ -56,6 +56,7 @@ public class AuthenticationController {
     })
     public ResponseEntity<APIResponse<SignupResponse>> signup(@Valid @RequestBody SignupRequest signupRequest) {
         SignupResponse authenticationResponse = this.authenticationService.signup(signupRequest);
-        return ResponseEntity.status(HttpStatus.OK).body(APIResponse.success(HttpStatus.OK.value(), Message.SIGNUP_SUCCESS.getMessage(), authenticationResponse));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(APIResponse.success(HttpStatus.CREATED.value(), Message.SIGNUP_SUCCESS.getMessage(), authenticationResponse));
     }
 }
